@@ -33,6 +33,17 @@
         </div>
 
         <div class="header-center">
+            <!-- Digital Clock in Header -->
+            <div class="header-clock" id="headerClock" role="button" tabindex="0" title="Click to toggle 12h / 24h format">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span class="header-clock-time" id="headerClockTime">--:--:--</span>
+                <span class="header-clock-sep">•</span>
+                <span class="header-clock-date" id="headerClockDate">---, --- --</span>
+            </div>
+
             <!-- Active Profile Selector Dropdown -->
             <div class="profile-pill">
                 <span class="pill-label">Profile:</span>
@@ -134,32 +145,53 @@
         <main class="deck-canvas">
             <!-- PAGE 1: HOME DASHBOARD -->
             <section id="page-home" class="view-page active">
-                <!-- Top Quick Master Volume Strip -->
-                <div class="card home-volume-strip">
-                    <div class="vol-label-group">
-                        <span class="section-title-sm">Windows Master Audio</span>
-                        <span id="homeVolumePercent" class="vol-badge">--%</span>
-                    </div>
-
-                    <div class="vol-slider-row">
-                        <button id="homeMuteToggle" class="btn-tactile btn-icon-only" title="Mute Audio">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                                <line x1="23" y1="9" x2="17" y2="15"></line>
-                                <line x1="17" y1="9" x2="23" y2="15"></line>
-                            </svg>
-                        </button>
-                        <div class="slider-wrapper">
-                            <input type="range" id="homeVolumeSlider" min="0" max="100" value="0" class="apple-range" aria-label="Volume slider">
+                <!-- Top Row: OLED Clock Widget + Master Audio -->
+                <div class="home-top-row">
+                    <!-- OLED Digital Clock & System Status Widget -->
+                    <div class="card home-clock-widget" id="homeClockWidget" role="button" tabindex="0" title="Click to toggle 12h / 24h format">
+                        <div class="clock-widget-top">
+                            <div class="clock-status-pill">
+                                <span class="status-pulse-dot"></span>
+                                <span class="status-pulse-text">SYSTEM ACTIVE</span>
+                            </div>
+                            <span class="clock-format-badge" id="clockFormatBadge">12H</span>
+                        </div>
+                        <div class="clock-hero-time">
+                            <span class="clock-digits" id="heroClockDigits">--:--:--</span>
+                            <span class="clock-ampm" id="heroClockAmPm">--</span>
+                        </div>
+                        <div class="clock-hero-date" id="heroClockDate">
+                            Loading date...
                         </div>
                     </div>
 
-                    <div class="vol-presets-row">
-                        <button class="btn-preset" data-vol="0">0%</button>
-                        <button class="btn-preset" data-vol="25">25%</button>
-                        <button class="btn-preset" data-vol="50">50%</button>
-                        <button class="btn-preset" data-vol="75">75%</button>
-                        <button class="btn-preset" data-vol="100">100%</button>
+                    <!-- Top Quick Master Volume Strip -->
+                    <div class="card home-volume-strip">
+                        <div class="vol-label-group">
+                            <span class="section-title-sm">Windows Master Audio</span>
+                            <span id="homeVolumePercent" class="vol-badge">--%</span>
+                        </div>
+
+                        <div class="vol-slider-row">
+                            <button id="homeMuteToggle" class="btn-tactile btn-icon-only" title="Mute Audio">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                    <line x1="23" y1="9" x2="17" y2="15"></line>
+                                    <line x1="17" y1="9" x2="23" y2="15"></line>
+                                </svg>
+                            </button>
+                            <div class="slider-wrapper">
+                                <input type="range" id="homeVolumeSlider" min="0" max="100" value="0" class="apple-range" aria-label="Volume slider">
+                            </div>
+                        </div>
+
+                        <div class="vol-presets-row">
+                            <button class="btn-preset" data-vol="0">0%</button>
+                            <button class="btn-preset" data-vol="25">25%</button>
+                            <button class="btn-preset" data-vol="50">50%</button>
+                            <button class="btn-preset" data-vol="75">75%</button>
+                            <button class="btn-preset" data-vol="100">100%</button>
+                        </div>
                     </div>
                 </div>
 

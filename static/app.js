@@ -1120,7 +1120,92 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     });
 
-    // Start initial loading and polling loop
+    // ==================== LIVE CLOCK ENGINE ====================
+    function initClock() {
+        let is24Hour = localStorage.getItem('dex_clock_format') === '24h';
+
+        function updateClocks() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            let ampm = '';
+
+            if (!is24Hour) {
+                ampm = hours >= 12 ? 'PM' : 'AM';
+                hours = hours % 12;
+                hours = hours ? hours : 12;
+            }
+            const hoursStr = is24Hour ? String(hours).padStart(2, '0') : String(hours);
+            const timeStr = `${hoursStr}:${minutes}:${seconds}`;
+            const headerTimeStr = is24Hour ? timeStr : `${timeStr} ${ampm}`;
+
+            const daysShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            const daysFull = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const monthsShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const monthsFull = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            const dayShort = daysShort[now.getDay()];
+            const dayFull = daysFull[now.getDay()];
+            const monthShort = monthsShort[now.getMonth()];
+            const monthFull = monthsFull[now.getMonth()];
+            const dateNum = now.getDate();
+            const year = now.getFullYear();
+
+            const headerDateStr = `${dayShort}, ${monthShort} ${dateNum}`;
+            const heroDateStr = `${dayFull}, ${monthFull} ${dateNum}, ${year}`;
+
+            const headerTimeEl = document.getElementById('headerClockTime');
+            const headerDateEl = document.getElementById('headerClockDate');
+            if (headerTimeEl) headerTimeEl.textContent = headerTimeStr;
+            if (headerDateEl) headerDateEl.textContent = headerDateStr;
+
+            const heroDigitsEl = document.getElementById('heroClockDigits');
+            const heroAmPmEl = document.getElementById('heroClockAmPm');
+            const heroDateEl = document.getElementById('heroClockDate');
+            const badgeEl = document.getElementById('clockFormatBadge');
+
+            if (heroDigitsEl) heroDigitsEl.textContent = timeStr;
+            if (heroAmPmEl) heroAmPmEl.textContent = is24Hour ? '24H' : ampm;
+            if (heroDateEl) heroDateEl.textContent = heroDateStr;
+            if (badgeEl) badgeEl.textContent = is24Hour ? '24H' : '12H';
+        }
+
+        function toggleClockFormat() {
+            is24Hour = !is24Hour;
+            localStorage.setItem('dex_clock_format', is24Hour ? '24h' : '12h');
+            updateClocks();
+            showToast(`Clock switched to ${is24Hour ? '24-hour' : '12-hour'} format`, 'info');
+        }
+
+        const headerClock = document.getElementById('headerClock');
+        if (headerClock) {
+            headerClock.addEventListener('click', toggleClockFormat);
+            headerClock.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleClockFormat();
+                }
+            });
+        }
+
+        const homeClockWidget = document.getElementById('homeClockWidget');
+        if (homeClockWidget) {
+            homeClockWidget.addEventListener('click', toggleClockFormat);
+            homeClockWidget.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleClockFormat();
+                }
+            });
+        }
+
+        updateClocks();
+        setInterval(updateClocks, 1000);
+    }
+
+    // Start initial loading, clock, and polling loop
+    initClock();
     loadProfiles();
     pollStatus();
     loadSettingsUI();
