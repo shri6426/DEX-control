@@ -1,0 +1,76 @@
+{
+  "coding_setup": {
+    "id": "coding_setup",
+    "name": "Coding Setup",
+    "icon": "code",
+    "category": "development",
+    "description": "Opens Antigravity IDE, Windows Terminal, and Google Chrome.",
+    "requires_confirmation": false,
+    "actions": [
+      {
+        "type": "launch_app",
+        "target": "antigravity"
+      },
+      {
+        "type": "delay",
+        "seconds": 0.5
+      },
+      {
+        "type": "launch_app",
+        "target": "terminal"
+      },
+      {
+        "type": "delay",
+        "seconds": 0.5
+      },
+      {
+        "type": "launch_app",
+        "target": "chrome"
+      }
+    ]
+  },
+  "focus_mode": {
+    "id": "focus_mode",
+    "name": "Focus Mode",
+    "icon": "eye",
+    "category": "workflow",
+    "description": "Sets master volume to 25% and opens Antigravity IDE.",
+    "requires_confirmation": false,
+    "actions": [
+      {
+        "type": "set_volume",
+        "level": 25
+      },
+      {
+        "type": "delay",
+        "seconds": 0.3
+      },
+      {
+        "type": "launch_app",
+        "target": "antigravity"
+      }
+    ]
+  },
+  "media_chill": {
+    "id": "media_chill",
+    "name": "Media Setup",
+    "icon": "music",
+    "category": "media",
+    "description": "Sets volume to 40% and toggles media playback.",
+    "requires_confirmation": false,
+    "actions": [
+      {
+        "type": "set_volume",
+        "level": 40
+      },
+      {
+        "type": "delay",
+        "seconds": 0.2
+      },
+      {
+        "type": "media_transport",
+        "action": "play_pause"
+      }
+    ]
+  }
+}

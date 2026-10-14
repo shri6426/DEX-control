@@ -1,0 +1,23 @@
+# Python virtual environment
+.venv/
+venv/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Private sensitive user credentials & secrets
+data/secret_key.bin
+data/credentials.json
+
+# Screen captures
+data/screenshots/*
+!data/screenshots/.gitkeep
+!data/.gitkeep
+
+# Operating system artifacts
+Thumbs.db
+Desktop.ini
+.DS_Store

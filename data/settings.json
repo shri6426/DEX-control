@@ -1,0 +1,11 @@
+{
+  "lan_enabled": true,
+  "port": 5000,
+  "app_paths": {
+    "antigravity": "",
+    "chrome": "",
+    "terminal": "",
+    "powershell": ""
+  },
+  "custom_apps": {}
+}

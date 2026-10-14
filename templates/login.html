@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DEX Control — Login</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="auth-body">
+    <div class="auth-card">
+        <div class="auth-header">
+            <div class="auth-logo-badge">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+            </div>
+            <h1>DEX Control</h1>
+            <p class="auth-subtitle">Windows Touch Control Deck</p>
+        </div>
+
+        <form id="loginForm" class="auth-form">
+            <div class="form-group">
+                <label for="password">Enter Master Password or 6-Digit PIN</label>
+                <input type="password" id="password" name="password" placeholder="Password or PIN" required autocomplete="current-password" autofocus>
+            </div>
+
+            <div id="loginError" class="auth-error-banner" style="display: none;"></div>
+
+            <button type="submit" id="loginBtn" class="btn-primary btn-block">
+                <span>Unlock Control Deck</span>
+            </button>
+        </form>
+
+        <div class="auth-tip-card">
+            <p><strong>iPad Quick Connect Tip:</strong> You can use the 6-digit pairing PIN shown on your Windows laptop settings screen instead of typing your full password on Safari touch.</p>
+        </div>
+
+        <div class="auth-footer-notice">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>Direct LAN connection to your Windows laptop.</span>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const errDiv = document.getElementById('loginError');
+        const btn = document.getElementById('loginBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errDiv.style.display = 'none';
+            const pwd = document.getElementById('password').value;
+
+            btn.disabled = true;
+            btn.innerHTML = '<span>Verifying...</span>';
+
+            try {
+                const res = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password: pwd })
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    window.location.href = '/';
+                } else {
+                    errDiv.textContent = data.message || 'Authentication failed.';
+                    errDiv.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>Unlock Control Deck</span>';
+                }
+            } catch (err) {
+                errDiv.textContent = 'Connection error. Check laptop network connection.';
+                errDiv.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = '<span>Unlock Control Deck</span>';
+            }
+        });
+    </script>
+</body>
+</html>
