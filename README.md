@@ -65,8 +65,8 @@ The launcher will automatically:
 
 ```powershell
 # 1. Clone the repository
-git clone https://github.com/your-username/dex-control.git
-cd dex-control
+git clone https://github.com/shri6426/DEX-control.git
+cd DEX-control
 
 # 2. Create and activate a virtual environment
 python -m venv .venv
