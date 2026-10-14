@@ -99,6 +99,14 @@
                 <span>Home</span>
             </button>
 
+            <button class="nav-tab" data-page="clock">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>Clock</span>
+            </button>
+
             <button class="nav-tab" data-page="media">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polygon points="5 3 19 12 5 21 5 3"></polygon>
@@ -163,6 +171,9 @@
                         <div class="clock-hero-date" id="heroClockDate">
                             Loading date...
                         </div>
+                        <div class="clock-widget-footer">
+                            <span class="clock-open-link">Open Fullscreen Clock ➔</span>
+                        </div>
                     </div>
 
                     <!-- Top Quick Master Volume Strip -->
@@ -225,6 +236,133 @@
                     </div>
                     <div id="activityFeed" class="activity-feed-list">
                         <div class="feed-empty">No actions executed yet. Tap any key on your iPad!</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- PAGE: DEDICATED FULL CLOCK & CALENDAR VIEW -->
+            <section id="page-clock" class="view-page clock-view-page">
+                <div class="clock-page-container">
+                    <!-- Top Toolbar on Clock Page -->
+                    <div class="clock-page-toolbar">
+                        <div class="clock-toolbar-left">
+                            <button id="clockBackToDeckBtn" class="btn-tactile btn-sm">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="19" y1="12" x2="5" y2="12"></line>
+                                    <polyline points="12 19 5 12 12 5"></polyline>
+                                </svg>
+                                <span>Back to Deck</span>
+                            </button>
+                            <div class="clock-live-pill">
+                                <span class="status-pulse-dot"></span>
+                                <span>WINDOWS PC SYNCED</span>
+                            </div>
+                        </div>
+
+                        <div class="clock-toolbar-right">
+                            <button id="fullClock1224Toggle" class="btn-tactile btn-sm" title="Toggle 12h/24h Time">
+                                <span id="fullClockFormatLabel">12H / 24H</span>
+                            </button>
+                            <button id="clockSecondsToggle" class="btn-tactile btn-sm" title="Toggle Seconds Display">
+                                <span id="clockSecToggleLabel">Sec: ON</span>
+                            </button>
+                            <button id="clockDimToggle" class="btn-tactile btn-sm" title="Nightstand Dim Mode">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                                </svg>
+                                <span id="clockDimLabel">Night Dim</span>
+                            </button>
+                            <button id="clockFullscreenBtn" class="btn-tactile btn-sm" title="Toggle Fullscreen">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                                </svg>
+                                <span>Fullscreen</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Hero Clock Main Display Card -->
+                    <div class="card full-clock-hero-card">
+                        <div class="full-clock-backdrop-glow"></div>
+
+                        <!-- Big Glowing Day of Week Banner -->
+                        <div class="full-clock-day-banner">
+                            <span class="day-glow-line"></span>
+                            <h2 id="fullClockDay" class="full-clock-day-text">WEDNESDAY</h2>
+                            <span class="day-glow-line"></span>
+                        </div>
+
+                        <!-- Big Hero Digital Time -->
+                        <div class="full-clock-time-display">
+                            <span id="fullClockHoursMins" class="full-clock-digits">10:02</span>
+                            <span id="fullClockSeconds" class="full-clock-seconds">:19</span>
+                            <span id="fullClockAmPm" class="full-clock-ampm">AM</span>
+                        </div>
+
+                        <!-- Full Calendar Date & Year -->
+                        <div class="full-clock-date-display">
+                            <span id="fullClockFullDate" class="full-clock-date-text">October 14, 2026</span>
+                            <span class="full-clock-dot-sep">•</span>
+                            <span id="fullClockDayOfYear" class="full-clock-day-year">Day 287 of 365</span>
+                        </div>
+
+                        <!-- Live Seconds Progress Gauge -->
+                        <div class="full-clock-progress-container" title="Current minute progress (0-60s)">
+                            <div class="full-clock-progress-bar">
+                                <div id="fullClockSecondsBar" class="full-clock-progress-fill" style="width: 32%;"></div>
+                            </div>
+                            <div class="full-clock-progress-labels">
+                                <span>:00s</span>
+                                <span id="fullClockSecondExact">32s</span>
+                                <span>:60s</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lower Stats Row: Timezone, Host Status, Week Number -->
+                    <div class="full-clock-info-grid">
+                        <div class="card clock-info-tile">
+                            <div class="tile-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                </svg>
+                            </div>
+                            <div class="tile-content">
+                                <span class="tile-label">Local Timezone</span>
+                                <span id="clockTimezoneText" class="tile-value">Local Time</span>
+                            </div>
+                        </div>
+
+                        <div class="card clock-info-tile">
+                            <div class="tile-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                                </svg>
+                            </div>
+                            <div class="tile-content">
+                                <span class="tile-label">Host Status</span>
+                                <span id="clockHostStatusText" class="tile-value">DEX Control Active</span>
+                            </div>
+                        </div>
+
+                        <div class="card clock-info-tile">
+                            <div class="tile-icon">
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                                </svg>
+                            </div>
+                            <div class="tile-content">
+                                <span class="tile-label">Calendar Week</span>
+                                <span id="clockWeekNumber" class="tile-value">Week 42 of 2026</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

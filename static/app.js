@@ -33,7 +33,8 @@ const ICONS = {
     'gamepad': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="6" y1="12" x2="10" y2="12"></line><line x1="8" y1="10" x2="8" y2="14"></line><line x1="15" y1="13" x2="15.01" y2="13"></line><line x1="18" y1="11" x2="18.01" y2="11"></line><rect x="2" y="6" width="20" height="12" rx="6"></rect></svg>',
     'music': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>',
     'eye': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>',
-    'layout-grid': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>'
+    'layout-grid': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>',
+    'clock': '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>'
 };
 
 // Global App State
@@ -231,6 +232,9 @@ async function executeAction(actionName, params = {}, btnEl = null) {
     if (res.ok) {
         showToast(res.message || 'Action executed', 'success');
         refreshHistory();
+        if (actionName === 'open_clock') {
+            switchNavPage('clock');
+        }
         // Immediately sync volume if volume action
         if (actionName.includes('volume') || actionName.includes('mute')) {
             if (res.result && typeof res.result.volume === 'number') {
@@ -790,21 +794,26 @@ function escapeHtml(str) {
     }[m]));
 }
 
+// Global Page Navigation
+function switchNavPage(pageId) {
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active'));
+    const tab = document.querySelector(`.nav-tab[data-page="${pageId}"]`);
+    if (tab) tab.classList.add('active');
+    const targetPage = document.getElementById(`page-${pageId}`);
+    if (targetPage) targetPage.classList.add('active');
+
+    if (pageId === 'apps') loadApps();
+    if (pageId === 'macros') loadMacros();
+    if (pageId === 'profiles') renderProfilesManager();
+}
+
 // ==================== INITIALIZATION & EVENT LISTENERS ====================
 document.addEventListener('DOMContentLoaded', () => {
     // Navigation Tabs
     document.querySelectorAll('.nav-tab').forEach(tab => {
         tab.addEventListener('click', () => {
-            const pageId = tab.dataset.page;
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.view-page').forEach(p => p.classList.remove('active'));
-            tab.classList.add('active');
-            const targetPage = document.getElementById(`page-${pageId}`);
-            if (targetPage) targetPage.classList.add('active');
-
-            if (pageId === 'apps') loadApps();
-            if (pageId === 'macros') loadMacros();
-            if (pageId === 'profiles') renderProfilesManager();
+            switchNavPage(tab.dataset.page);
         });
     });
 
@@ -1123,12 +1132,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==================== LIVE CLOCK ENGINE ====================
     function initClock() {
         let is24Hour = localStorage.getItem('dex_clock_format') === '24h';
+        let showSeconds = localStorage.getItem('dex_clock_seconds') !== 'false';
+        let isDimmed = false;
 
         function updateClocks() {
             const now = new Date();
             let hours = now.getHours();
             const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const rawSeconds = now.getSeconds();
+            const seconds = String(rawSeconds).padStart(2, '0');
             let ampm = '';
 
             if (!is24Hour) {
@@ -1155,11 +1167,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const headerDateStr = `${dayShort}, ${monthShort} ${dateNum}`;
             const heroDateStr = `${dayFull}, ${monthFull} ${dateNum}, ${year}`;
 
+            // Header Clock elements
             const headerTimeEl = document.getElementById('headerClockTime');
             const headerDateEl = document.getElementById('headerClockDate');
             if (headerTimeEl) headerTimeEl.textContent = headerTimeStr;
             if (headerDateEl) headerDateEl.textContent = headerDateStr;
 
+            // Home Hero Clock elements
             const heroDigitsEl = document.getElementById('heroClockDigits');
             const heroAmPmEl = document.getElementById('heroClockAmPm');
             const heroDateEl = document.getElementById('heroClockDate');
@@ -1169,33 +1183,122 @@ document.addEventListener('DOMContentLoaded', () => {
             if (heroAmPmEl) heroAmPmEl.textContent = is24Hour ? '24H' : ampm;
             if (heroDateEl) heroDateEl.textContent = heroDateStr;
             if (badgeEl) badgeEl.textContent = is24Hour ? '24H' : '12H';
+
+            // Dedicated Full Clock Page Elements
+            const fullClockDay = document.getElementById('fullClockDay');
+            const fullClockHoursMins = document.getElementById('fullClockHoursMins');
+            const fullClockSeconds = document.getElementById('fullClockSeconds');
+            const fullClockAmPm = document.getElementById('fullClockAmPm');
+            const fullClockFullDate = document.getElementById('fullClockFullDate');
+            const fullClockDayOfYear = document.getElementById('fullClockDayOfYear');
+            const fullClockSecondsBar = document.getElementById('fullClockSecondsBar');
+            const fullClockSecondExact = document.getElementById('fullClockSecondExact');
+
+            if (fullClockDay) fullClockDay.textContent = dayFull.toUpperCase();
+            if (fullClockHoursMins) fullClockHoursMins.textContent = `${hoursStr}:${minutes}`;
+            if (fullClockSeconds) {
+                fullClockSeconds.textContent = `:${seconds}`;
+                fullClockSeconds.style.display = showSeconds ? 'inline-block' : 'none';
+            }
+            if (fullClockAmPm) fullClockAmPm.textContent = is24Hour ? '24H' : ampm;
+            if (fullClockFullDate) fullClockFullDate.textContent = `${monthFull} ${dateNum}, ${year}`;
+
+            // Day of Year & Week Calculation
+            const startOfYear = new Date(year, 0, 1);
+            const dayOfYear = Math.floor((now - startOfYear) / (24 * 60 * 60 * 1000)) + 1;
+            const isLeap = (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+            const totalDays = isLeap ? 366 : 365;
+            if (fullClockDayOfYear) fullClockDayOfYear.textContent = `Day ${dayOfYear} of ${totalDays}`;
+
+            // Seconds Gauge
+            const secPct = ((rawSeconds + 1) / 60) * 100;
+            if (fullClockSecondsBar) fullClockSecondsBar.style.width = `${secPct}%`;
+            if (fullClockSecondExact) fullClockSecondExact.textContent = `${rawSeconds}s`;
+
+            // Calendar week
+            const weekNum = Math.ceil((((now - startOfYear) / 86400000) + startOfYear.getDay() + 1) / 7);
+            const weekEl = document.getElementById('clockWeekNumber');
+            if (weekEl) weekEl.textContent = `Week ${weekNum} of ${year}`;
+
+            // Local Timezone info
+            const tzTextEl = document.getElementById('clockTimezoneText');
+            if (tzTextEl && !tzTextEl.dataset.initialized) {
+                try {
+                    const tzName = Intl.DateTimeFormat().resolvedOptions().timeZone || 'Local';
+                    const tzOffset = -now.getTimezoneOffset();
+                    const diffH = Math.floor(Math.abs(tzOffset) / 60);
+                    const diffM = Math.abs(tzOffset) % 60;
+                    const tzSign = tzOffset >= 0 ? '+' : '-';
+                    const tzOffsetStr = `UTC${tzSign}${String(diffH).padStart(2, '0')}:${String(diffM).padStart(2, '0')}`;
+                    tzTextEl.textContent = `${tzOffsetStr} • ${tzName}`;
+                    tzTextEl.dataset.initialized = 'true';
+                } catch (e) {
+                    tzTextEl.textContent = 'Local Time';
+                }
+            }
         }
 
         function toggleClockFormat() {
             is24Hour = !is24Hour;
             localStorage.setItem('dex_clock_format', is24Hour ? '24h' : '12h');
+            const fmtLabel = document.getElementById('fullClockFormatLabel');
+            if (fmtLabel) fmtLabel.textContent = is24Hour ? '24H Mode' : '12H Mode';
             updateClocks();
             showToast(`Clock switched to ${is24Hour ? '24-hour' : '12-hour'} format`, 'info');
         }
 
+        // Header Clock click -> open dedicated full Clock page
         const headerClock = document.getElementById('headerClock');
         if (headerClock) {
-            headerClock.addEventListener('click', toggleClockFormat);
-            headerClock.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    toggleClockFormat();
-                }
+            headerClock.addEventListener('click', () => switchNavPage('clock'));
+        }
+
+        // Home widget click -> open dedicated full Clock page
+        const homeClockWidget = document.getElementById('homeClockWidget');
+        if (homeClockWidget) {
+            homeClockWidget.addEventListener('click', () => switchNavPage('clock'));
+        }
+
+        // Clock Page Toolbar Controls
+        const clockBackToDeckBtn = document.getElementById('clockBackToDeckBtn');
+        if (clockBackToDeckBtn) {
+            clockBackToDeckBtn.addEventListener('click', () => switchNavPage('home'));
+        }
+
+        const fullClock1224Toggle = document.getElementById('fullClock1224Toggle');
+        if (fullClock1224Toggle) {
+            fullClock1224Toggle.addEventListener('click', toggleClockFormat);
+        }
+
+        const clockSecondsToggle = document.getElementById('clockSecondsToggle');
+        if (clockSecondsToggle) {
+            clockSecondsToggle.addEventListener('click', () => {
+                showSeconds = !showSeconds;
+                localStorage.setItem('dex_clock_seconds', showSeconds ? 'true' : 'false');
+                const secLabel = document.getElementById('clockSecToggleLabel');
+                if (secLabel) secLabel.textContent = showSeconds ? 'Sec: ON' : 'Sec: OFF';
+                updateClocks();
             });
         }
 
-        const homeClockWidget = document.getElementById('homeClockWidget');
-        if (homeClockWidget) {
-            homeClockWidget.addEventListener('click', toggleClockFormat);
-            homeClockWidget.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    toggleClockFormat();
+        const clockDimToggle = document.getElementById('clockDimToggle');
+        if (clockDimToggle) {
+            clockDimToggle.addEventListener('click', () => {
+                isDimmed = !isDimmed;
+                document.body.classList.toggle('clock-nightstand-dim', isDimmed);
+                const label = document.getElementById('clockDimLabel');
+                if (label) label.textContent = isDimmed ? 'Dim: ON' : 'Night Dim';
+                showToast(isDimmed ? 'Nightstand dim mode on' : 'Dim mode off', 'info');
+            });
+        }
+
+        const clockFullscreenBtn = document.getElementById('clockFullscreenBtn');
+        if (clockFullscreenBtn) {
+            clockFullscreenBtn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(() => {});
+                } else {
+                    document.exitFullscreen().catch(() => {});
                 }
             });
         }

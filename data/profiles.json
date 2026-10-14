@@ -17,6 +17,14 @@
           "size": "1x1"
         },
         {
+          "id": "btn_open_clock",
+          "label": "Full Clock",
+          "icon": "clock",
+          "category": "system",
+          "action": "open_clock",
+          "size": "1x1"
+        },
+        {
           "id": "btn_vol_down",
           "label": "Vol -5%",
           "icon": "volume-1",

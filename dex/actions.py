@@ -118,6 +118,14 @@ def execute_action(action_name: str, params: Dict[str, Any]) -> Dict[str, Any]:
         log_action("Show Desktop", "Desktop toggled", success)
         return res
 
+    elif action_name == "open_clock":
+        log_action("Full Clock", "Opened Fullscreen Clock View", True)
+        return {
+            "ok": True,
+            "action": "open_clock",
+            "message": "Switched to Full Clock View"
+        }
+
     elif action_name == "lock_pc":
         # Requires explicit confirmation flag from frontend
         confirmed = bool(params.get("confirmed"))

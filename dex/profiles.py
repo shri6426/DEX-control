@@ -13,6 +13,7 @@ DEFAULT_PROFILES = {
             "is_builtin": True,
             "buttons": [
                 {"id": "btn_vol_mute", "label": "Mute Toggle", "icon": "volume-x", "category": "audio", "action": "set_mute", "size": "1x1"},
+                {"id": "btn_open_clock", "label": "Full Clock", "icon": "clock", "category": "system", "action": "open_clock", "size": "1x1"},
                 {"id": "btn_vol_down", "label": "Vol -5%", "icon": "volume-1", "category": "audio", "action": "volume_step", "params": {"delta": -5}, "size": "1x1"},
                 {"id": "btn_vol_up", "label": "Vol +5%", "icon": "volume-2", "category": "audio", "action": "volume_step", "params": {"delta": 5}, "size": "1x1"},
                 {"id": "btn_media_pp", "label": "Play / Pause", "icon": "play", "category": "media", "action": "media_transport", "params": {"action": "play_pause"}, "size": "1x1"},

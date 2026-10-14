@@ -1654,3 +1654,288 @@ input:focus, select:focus {
         min-height: 90px;
     }
 }
+
+/* ==================== DEDICATED FULL CLOCK & CALENDAR PAGE ==================== */
+.clock-view-page {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding-bottom: 30px;
+}
+
+.clock-page-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Toolbar */
+.clock-page-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.clock-toolbar-left,
+.clock-toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.clock-live-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    border-radius: var(--radius-md);
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--success);
+    letter-spacing: 0.5px;
+}
+
+/* Hero Clock Card */
+.full-clock-hero-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 44px 28px;
+    background: radial-gradient(circle at 50% 30%, rgba(20, 24, 36, 0.98) 0%, rgba(4, 5, 8, 0.99) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 0 40px rgba(14, 165, 233, 0.08);
+    border-radius: var(--radius-xl);
+    position: relative;
+    overflow: hidden;
+}
+
+.full-clock-backdrop-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 350px;
+    background: radial-gradient(ellipse at center, rgba(14, 165, 233, 0.14) 0%, rgba(0, 0, 0, 0) 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Day of Week Banner */
+.full-clock-day-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 12px;
+    z-index: 1;
+}
+
+.day-glow-line {
+    width: 48px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent));
+    border-radius: 2px;
+}
+
+.day-glow-line:last-child {
+    background: linear-gradient(90deg, var(--accent), transparent);
+}
+
+.full-clock-day-text {
+    font-size: clamp(20px, 3.8vw, 32px);
+    font-weight: 900;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--accent);
+    text-shadow: 0 0 24px var(--accent-glow);
+}
+
+/* Time Display */
+.full-clock-time-display {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px;
+    margin: 10px 0 16px 0;
+    z-index: 1;
+    user-select: none;
+    font-variant-numeric: tabular-nums;
+}
+
+.full-clock-digits {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: clamp(64px, 13vw, 120px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    color: #ffffff;
+    text-shadow: 0 6px 30px rgba(0, 0, 0, 0.9), 0 0 35px rgba(255, 255, 255, 0.25);
+}
+
+.full-clock-seconds {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: clamp(32px, 6vw, 56px);
+    font-weight: 700;
+    color: var(--accent);
+    text-shadow: 0 0 20px var(--accent-glow);
+    margin-left: 2px;
+}
+
+.full-clock-ampm {
+    font-size: clamp(16px, 2.5vw, 24px);
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: var(--text-secondary);
+    margin-left: 12px;
+    background: var(--bg-surface-elevated);
+    padding: 4px 10px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+/* Date Display */
+.full-clock-date-display {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+    z-index: 1;
+    color: var(--text-primary);
+    font-size: clamp(15px, 2.4vw, 22px);
+    font-weight: 600;
+}
+
+.full-clock-date-text {
+    color: var(--text-primary);
+}
+
+.full-clock-dot-sep {
+    color: var(--text-muted);
+}
+
+.full-clock-day-year {
+    color: var(--text-secondary);
+    font-size: clamp(13px, 1.8vw, 16px);
+    font-weight: 500;
+}
+
+/* Seconds Progress Bar */
+.full-clock-progress-container {
+    width: 100%;
+    max-width: 580px;
+    z-index: 1;
+}
+
+.full-clock-progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--border-subtle);
+}
+
+.full-clock-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #0284c7, var(--accent), #38bdf8);
+    box-shadow: 0 0 12px var(--accent);
+    border-radius: 4px;
+    transition: width 0.25s linear;
+}
+
+.full-clock-progress-labels {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", monospace;
+}
+
+/* Lower Info Grid */
+.full-clock-info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 800px) {
+    .full-clock-info-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.clock-info-tile {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 20px;
+    margin-bottom: 0 !important;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+}
+
+.clock-info-tile .tile-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface-elevated);
+    color: var(--accent);
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.clock-info-tile .tile-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.clock-info-tile .tile-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.clock-info-tile .tile-value {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+/* Nightstand Dim Mode */
+body.clock-nightstand-dim {
+    filter: brightness(0.35) contrast(0.95);
+    transition: filter 0.4s ease;
+}
+
+/* Link on Home Clock Widget */
+.clock-widget-footer {
+    margin-top: 6px;
+}
+
+.clock-open-link {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    transition: color 0.15s ease;
+}
+
+.home-clock-widget:hover .clock-open-link {
+    color: var(--accent-hover);
+    text-decoration: underline;
+}
+
