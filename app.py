@@ -404,16 +404,24 @@ if __name__ == "__main__":
     host = "0.0.0.0" if lan_enabled else "127.0.0.1"
     port = settings.get("port", 5000)
     
-    print("\n" + "="*50)
-    print("  DEX CONTROL - Windows Personal Control Deck")
-    print("="*50)
-    print(f"  Local Access: http://127.0.0.1:{port}")
+    print("\n" + "="*50, flush=True)
+    print("  DEX CONTROL - Windows Personal Control Deck", flush=True)
+    print("="*50, flush=True)
+    print(f"  Local Access: http://127.0.0.1:{port}", flush=True)
     lan_ip = get_lan_ip()
-    print(f"  LAN Access:   http://{lan_ip}:{port} (Open on your iPad Safari)")
-    print("="*50 + "\n")
+    print(f"  LAN Access:   http://{lan_ip}:{port} (Open on your iPad Safari)", flush=True)
+    print("="*50 + "\n", flush=True)
     
     try:
-        from waitress import serve
-        serve(app, host=host, port=port, threads=8)
-    except ImportError:
-        app.run(host=host, port=port, debug=False)
+        try:
+            from waitress import serve
+            serve(app, host=host, port=port, threads=8)
+        except ImportError:
+            app.run(host=host, port=port, debug=False)
+    except OSError as e:
+        if "10048" in str(e) or "already in use" in str(e).lower():
+            print(f"\n[ERROR] Port {port} is already in use by another instance or process.")
+            print("  -> Solution: Run 'run.bat' (it will automatically clean stale processes) or close the other running terminal window.\n", flush=True)
+        else:
+            print(f"\n[ERROR] Server error: {e}\n", flush=True)
+        sys.exit(1)
